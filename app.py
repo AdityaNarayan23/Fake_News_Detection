@@ -35,26 +35,24 @@ def predict():
     
     str_features = [str(x) for x in request.form.values()]
     
-    if len(str_features) == 0:
-        prediction_text = 'Please enter valid Input - Title, Author and Text'
-    else:
-        title = str_features[0]
-        print(title)
-        author = str_features[1]
-        print(author)
-        text = str_features[2]
-        print(text)
+    title = str_features[0]
+    print(title)
+    author = str_features[1]
+    print(author)
+    text = str_features[2]
+    print(text)
 
-        stop_words = stopwords.words('english')
-        stopwords_dict = Counter(stop_words)
+    stop_words = stopwords.words('english')
+    stopwords_dict = Counter(stop_words)
         
-        author_title = author + ' ' + title
-        author_title = author_title.lower()
-        author_title = "".join([ch for ch in author_title if ch not in st.punctuation])
-        author_title = [word for word in author_title.split() if word not in stopwords_dict]
-        author_title_clean = ' '.join([str(word) for word in author_title])
-        print(author_title_clean)
+    author_title = author + ' ' + title
+    author_title = author_title.lower()
+    author_title = "".join([ch for ch in author_title if ch not in st.punctuation])
+    author_title = [word for word in author_title.split() if word not in stopwords_dict]
+    author_title_clean = ' '.join([str(word) for word in author_title])
+    print(author_title_clean)
     
+    if len(author_title_clean) != 0:
         text_list = [author_title_clean]
         text_count = check_vector.transform(text_list)
         prediction = check_model.predict(text_count)
@@ -65,10 +63,11 @@ def predict():
             prediction = "Fake News"
         else:
             prediction = "Real News"
-        prediction_text = 'The News published is : {}'.format(prediction)
-        
-    return render_template('index.html',prediction_text)
-    #return render_template('index.html',prediction_text='The News published is : {}'.format(prediction))
+        return render_template('index.html',prediction_text='The News published is : {}'.format(prediction))
+    else:
+        return render_template('index.html',prediction_text='Please enter valid Input - Title, Author and Text')
+    
+
     
 
 if __name__ == '__main__':
